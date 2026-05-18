@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %}Udlæg · {{ person.name }}{% endblock %}
+{% block content %}
+<p class="eyebrow"><a href="/p/{{ token }}">← {{ person.name }}s oversigt</a></p>
+<h1>{{ expense.description or expense.category or "Udlæg" }}</h1>
+
+<p class="status-line">
+  Status: <span class="badge {{ st.status }}">{{ st.status }}</span>
+  · Betalt {{ st.total_paid | kr }} af {{ expense.amount_dkk | kr }}
+  {% if st.remaining > 0 %}· Mangler <strong>{{ st.remaining | kr }}</strong>{% endif %}
+</p>
+
+<dl class="meta">
+  <dt>Dato</dt><dd>{{ expense.date | dkdate }}</dd>
+  <dt>Beløb</dt><dd>{{ expense.amount_dkk | kr }}</dd>
+  <dt>Kategori</dt><dd>{{ expense.category or "–" }}</dd>
+  <dt>Beskrivelse</dt><dd>{{ expense.description or "–" }}</dd>
+</dl>
+
+<section>
+  <h2>Kvitteringer</h2>
+  {% if receipts %}
+  <div class="thumbs">
+    {% for r in receipts %}
+    <div class="thumb">
+      {% if r.mime_type.startswith("image/") %}
+        <a href="/p/{{ token }}/receipt/{{ r.id }}" target="_blank" rel="noopener">
+          <img src="/p/{{ token }}/receipt/{{ r.id }}" alt="kvittering" loading="lazy">
+        </a>
+      {% else %}
+        <a href="/p/{{ token }}/receipt/{{ r.id }}" target="_blank" rel="noopener" class="pdf-tile">PDF</a>
+      {% endif %}
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <p class="muted">Ingen kvittering uploadet på dette udlæg.</p>
+  {% endif %}
+</section>
+
+<p class="public-foot">Skrivebeskyttet · spørgsmål? Tag fat i den der lagde ud.</p>
+{% endblock %}

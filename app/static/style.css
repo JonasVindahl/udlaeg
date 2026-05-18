@@ -629,6 +629,28 @@ progress::-moz-progress-bar { background: var(--accent); border-radius: 999px; }
 .paid-fold summary:hover { background: var(--surface-2); }
 .paid-fold[open] summary { margin-bottom: 1.1rem; }
 
+.tag {
+  display: inline-block;
+  margin-left: .5rem;
+  padding: .1rem .5rem;
+  border-radius: 999px;
+  background: var(--surface-2);
+  border: 1px solid var(--hairline-2);
+  color: var(--muted);
+  font-size: .68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  vertical-align: middle;
+}
+.clip {
+  margin-left: .5rem;
+  color: var(--muted);
+  font-size: .78rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
 .public-foot {
   margin-top: 3rem;
   color: var(--muted);

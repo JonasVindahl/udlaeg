@@ -16,23 +16,30 @@
   {% endif %}
 </div>
 
+{% macro row(exp, st) %}
+  <tr>
+    <td data-label="Dato">
+      <a href="/p/{{ token }}/expense/{{ exp.id }}">{{ exp.date | dkdate }}</a>
+    </td>
+    <td data-label="Beskrivelse">
+      <a href="/p/{{ token }}/expense/{{ exp.id }}">{{ exp.description or exp.category or "Udlæg" }}</a>
+      {% if exp.category %}<span class="tag">{{ exp.category }}</span>{% endif %}
+      {% if exp.receipts %}<span class="clip" title="{{ exp.receipts | length }} kvittering(er)">📎 {{ exp.receipts | length }}</span>{% endif %}
+    </td>
+    <td class="num" data-label="Beløb">{{ exp.amount_dkk | kr }}</td>
+    <td class="num" data-label="Mangler">{{ st.remaining | kr }}</td>
+    <td data-label="Status"><span class="badge {{ st.status }}">{{ st.status }}</span></td>
+  </tr>
+{% endmacro %}
+
 {% if open_rows %}
 <section>
   <h2>Udestående</h2>
   <table class="data">
     <thead><tr><th>Dato</th><th>Beskrivelse</th><th class="num">Beløb</th>
-    <th class="num">Betalt</th><th class="num">Mangler</th><th>Status</th></tr></thead>
+    <th class="num">Mangler</th><th>Status</th></tr></thead>
     <tbody>
-    {% for exp, st in open_rows %}
-      <tr>
-        <td data-label="Dato">{{ exp.date | dkdate }}</td>
-        <td data-label="Beskrivelse">{{ exp.description or exp.category or "–" }}</td>
-        <td class="num" data-label="Beløb">{{ exp.amount_dkk | kr }}</td>
-        <td class="num" data-label="Betalt">{{ st.total_paid | kr }}</td>
-        <td class="num" data-label="Mangler">{{ st.remaining | kr }}</td>
-        <td data-label="Status"><span class="badge {{ st.status }}">{{ st.status }}</span></td>
-      </tr>
-    {% endfor %}
+    {% for exp, st in open_rows %}{{ row(exp, st) }}{% endfor %}
     </tbody>
   </table>
 </section>
@@ -43,21 +50,15 @@
   <details class="paid-fold">
     <summary>Tidligere betalt ({{ paid_rows | length }})</summary>
     <table class="data">
-      <thead><tr><th>Dato</th><th>Beskrivelse</th><th class="num">Beløb</th><th>Status</th></tr></thead>
+      <thead><tr><th>Dato</th><th>Beskrivelse</th><th class="num">Beløb</th>
+      <th class="num">Mangler</th><th>Status</th></tr></thead>
       <tbody>
-      {% for exp, st in paid_rows %}
-        <tr>
-          <td data-label="Dato">{{ exp.date | dkdate }}</td>
-          <td data-label="Beskrivelse">{{ exp.description or exp.category or "–" }}</td>
-          <td class="num" data-label="Beløb">{{ exp.amount_dkk | kr }}</td>
-          <td data-label="Status"><span class="badge {{ st.status }}">{{ st.status }}</span></td>
-        </tr>
-      {% endfor %}
+      {% for exp, st in paid_rows %}{{ row(exp, st) }}{% endfor %}
       </tbody>
     </table>
   </details>
 </section>
 {% endif %}
 
-<p class="public-foot">Skrivebeskyttet oversigt · spørgsmål? Tag fat i den der lagde ud.</p>
+<p class="public-foot">Skrivebeskyttet oversigt · tryk på et udlæg for kvittering og detaljer.</p>
 {% endblock %}
