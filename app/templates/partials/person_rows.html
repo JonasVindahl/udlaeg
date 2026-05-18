@@ -1,9 +1,9 @@
 <tbody id="person-rows">
 {% for person in persons %}
   <tr id="person-{{ person.id }}">
-    <td>{{ person.name }}</td>
-    <td>{{ person.created_at | dkdate }}</td>
-    <td class="row-actions">
+    <td data-label="Navn">{{ person.name }}</td>
+    <td data-label="Oprettet">{{ person.created_at | dkdate }}</td>
+    <td class="row-actions" data-label="Handling">
       <button class="link" hx-get="/persons/{{ person.id }}/edit"
               hx-target="#person-{{ person.id }}" hx-swap="outerHTML">Rediger</button>
       <button class="link danger" hx-post="/persons/{{ person.id }}/delete"

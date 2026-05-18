@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% block title %}Dashboard – Udlæg{% endblock %}
 {% block content %}
+<p class="eyebrow">Overblik</p>
 <h1>Dashboard</h1>
 
 <section>
@@ -31,11 +32,11 @@
     <tbody>
     {% for exp, st in latest %}
       <tr>
-        <td><a href="/expenses/{{ exp.id }}">{{ exp.date | dkdate }}</a></td>
-        <td>{{ exp.person.name }}</td>
-        <td>{{ exp.description or exp.category or "–" }}</td>
-        <td class="num">{{ exp.amount_dkk | kr }}</td>
-        <td><span class="badge {{ st.status }}">{{ st.status }}</span></td>
+        <td data-label="Dato"><a href="/expenses/{{ exp.id }}">{{ exp.date | dkdate }}</a></td>
+        <td data-label="Person">{{ exp.person.name }}</td>
+        <td data-label="Beskrivelse">{{ exp.description or exp.category or "–" }}</td>
+        <td class="num" data-label="Beløb">{{ exp.amount_dkk | kr }}</td>
+        <td data-label="Status"><span class="badge {{ st.status }}">{{ st.status }}</span></td>
       </tr>
     {% endfor %}
     </tbody>

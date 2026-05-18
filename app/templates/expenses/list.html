@@ -1,9 +1,10 @@
 {% extends "base.html" %}
 {% block title %}Udlæg – Udlæg{% endblock %}
 {% block content %}
+<p class="eyebrow">Registrering</p>
 <div class="section-head">
   <h1>Udlæg</h1>
-  <a class="btn" href="/expenses/new">+ Nyt udlæg</a>
+  <a class="btn" href="/expenses/new">Nyt udlæg</a>
 </div>
 
 <form class="filters" hx-get="/expenses" hx-target="#expense-rows" hx-swap="outerHTML"

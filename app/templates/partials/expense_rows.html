@@ -1,13 +1,13 @@
 <tbody id="expense-rows">
 {% for exp, st in rows %}
   <tr>
-    <td><a href="/expenses/{{ exp.id }}">{{ exp.date | dkdate }}</a></td>
-    <td>{{ exp.person.name }}</td>
-    <td>{{ exp.description or "–" }}</td>
-    <td>{{ exp.category or "–" }}</td>
-    <td class="num">{{ exp.amount_dkk | kr }}</td>
-    <td class="num">{{ st.total_paid | kr }}</td>
-    <td><span class="badge {{ st.status }}">{{ st.status }}</span></td>
+    <td data-label="Dato"><a href="/expenses/{{ exp.id }}">{{ exp.date | dkdate }}</a></td>
+    <td data-label="Person">{{ exp.person.name }}</td>
+    <td data-label="Beskrivelse">{{ exp.description or "–" }}</td>
+    <td data-label="Kategori">{{ exp.category or "–" }}</td>
+    <td class="num" data-label="Beløb">{{ exp.amount_dkk | kr }}</td>
+    <td class="num" data-label="Betalt">{{ st.total_paid | kr }}</td>
+    <td data-label="Status"><span class="badge {{ st.status }}">{{ st.status }}</span></td>
   </tr>
 {% else %}
   <tr><td colspan="7" class="muted">Ingen udlæg matcher filteret.</td></tr>

@@ -10,10 +10,10 @@
     <tbody>
     {% for p in expense.payments | sort(attribute="paid_at") %}
       <tr>
-        <td>{{ p.paid_at | dkdate }}</td>
-        <td>{{ p.note or "–" }}</td>
-        <td class="num">{{ p.amount_dkk | kr }}</td>
-        <td>
+        <td data-label="Dato">{{ p.paid_at | dkdate }}</td>
+        <td data-label="Note">{{ p.note or "–" }}</td>
+        <td class="num" data-label="Beløb">{{ p.amount_dkk | kr }}</td>
+        <td data-label="" class="row-actions">
           <button class="link danger" hx-post="/payments/{{ p.id }}/delete"
                   hx-target="#payment-panel" hx-swap="outerHTML">Slet</button>
         </td>
