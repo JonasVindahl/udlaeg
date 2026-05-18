@@ -1,6 +1,6 @@
 services:
   udlaeg:
-    build: .
+    image: ghcr.io/jonasvindahl/udlaeg:latest
     container_name: udlaeg
     restart: unless-stopped
     ports:

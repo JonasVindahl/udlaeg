@@ -41,9 +41,12 @@ Bygges som image og køres i Proxmox Docker LXC (192.168.255.15),
 eksponeres via Cloudflare Tunnel + Nginx Proxy Manager på
 `udlaeg.jonasvindahl.dk`.
 
+Imaget bygges i CI/lokalt og pushes til
+`ghcr.io/jonasvindahl/udlaeg:latest`; LXC'en puller det.
+
 ```sh
-docker compose build
 # .env skal ligge ved siden af docker-compose.yml
+docker compose pull
 docker compose up -d
 ```
 
