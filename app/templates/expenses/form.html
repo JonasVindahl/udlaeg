@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block title %}{{ "Rediger udlæg" if expense else "Nyt udlæg" }} – Udlæg{% endblock %}
+{% block content %}
+<h1>{{ "Rediger udlæg" if expense else "Nyt udlæg" }}</h1>
+
+<form class="stacked" method="post"
+      action="{{ ('/expenses/' ~ expense.id) if expense else '/expenses' }}"
+      enctype="multipart/form-data">
+  <label>Person
+    <select name="person_id" required>
+      {% for p in persons %}
+      <option value="{{ p.id }}" {% if expense and expense.person_id == p.id %}selected{% endif %}>{{ p.name }}</option>
+      {% endfor %}
+    </select>
+  </label>
+  <label>Beløb (kr)
+    <input type="text" name="amount_dkk" inputmode="decimal"
+           value="{{ expense.amount_dkk if expense else '' }}" required>
+  </label>
+  <label>Dato
+    <input type="date" name="date" value="{{ expense.date.isoformat() if expense else '' }}" required>
+  </label>
+  <label>Kategori
+    <input type="text" name="category" value="{{ expense.category or '' if expense else '' }}">
+  </label>
+  <label>Beskrivelse
+    <textarea name="description" rows="3">{{ expense.description or '' if expense else '' }}</textarea>
+  </label>
+  <label>Kvittering (jpg, png, pdf, heic – maks 10 MB)
+    <input type="file" name="receipt" accept=".jpg,.jpeg,.png,.pdf,.heic">
+  </label>
+  <div class="form-actions">
+    <button type="submit">Gem</button>
+    <a class="link" href="{{ ('/expenses/' ~ expense.id) if expense else '/expenses' }}">Annullér</a>
+  </div>
+</form>
+{% endblock %}

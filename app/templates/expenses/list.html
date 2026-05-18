@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}Udlæg – Udlæg{% endblock %}
+{% block content %}
+<div class="section-head">
+  <h1>Udlæg</h1>
+  <a class="btn" href="/expenses/new">+ Nyt udlæg</a>
+</div>
+
+<form class="filters" hx-get="/expenses" hx-target="#expense-rows" hx-swap="outerHTML"
+      hx-trigger="change, submit">
+  <select name="person_id">
+    <option value="">Alle personer</option>
+    {% for p in persons %}
+    <option value="{{ p.id }}" {% if filters.person_id == p.id %}selected{% endif %}>{{ p.name }}</option>
+    {% endfor %}
+  </select>
+  <select name="expense_status">
+    <option value="">Alle statusser</option>
+    {% for s in ["pending", "partial", "paid"] %}
+    <option value="{{ s }}" {% if filters.expense_status == s %}selected{% endif %}>{{ s }}</option>
+    {% endfor %}
+  </select>
+  <input type="date" name="date_from" value="{{ filters.date_from or '' }}">
+  <input type="date" name="date_to" value="{{ filters.date_to or '' }}">
+  <button type="submit">Filtrér</button>
+</form>
+
+<table class="data">
+  <thead><tr><th>Dato</th><th>Person</th><th>Beskrivelse</th><th>Kategori</th>
+  <th class="num">Beløb</th><th class="num">Betalt</th><th>Status</th></tr></thead>
+  {% include "partials/expense_rows.html" %}
+</table>
+{% endblock %}

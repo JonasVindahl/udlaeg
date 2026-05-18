@@ -1,0 +1,11 @@
+<tr id="person-{{ person.id }}">
+  <td colspan="3">
+    <form class="inline-form" hx-post="/persons/{{ person.id }}"
+          hx-target="#person-rows" hx-swap="outerHTML">
+      <input type="text" name="name" value="{{ person.name }}" required autofocus>
+      <button type="submit">Gem</button>
+      <button type="button" class="link" hx-get="/persons"
+              hx-select="#person-rows" hx-target="#person-rows" hx-swap="outerHTML">Annullér</button>
+    </form>
+  </td>
+</tr>

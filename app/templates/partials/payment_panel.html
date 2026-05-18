@@ -1,0 +1,38 @@
+<div id="payment-panel">
+  <p class="status-line">
+    Status: <span class="badge {{ st.status }}">{{ st.status }}</span>
+    · Betalt {{ st.total_paid | kr }} af {{ expense.amount_dkk | kr }}
+    · Mangler <strong>{{ st.remaining | kr }}</strong>
+  </p>
+
+  <table class="data">
+    <thead><tr><th>Dato</th><th>Note</th><th class="num">Beløb</th><th></th></tr></thead>
+    <tbody>
+    {% for p in expense.payments | sort(attribute="paid_at") %}
+      <tr>
+        <td>{{ p.paid_at | dkdate }}</td>
+        <td>{{ p.note or "–" }}</td>
+        <td class="num">{{ p.amount_dkk | kr }}</td>
+        <td>
+          <button class="link danger" hx-post="/payments/{{ p.id }}/delete"
+                  hx-target="#payment-panel" hx-swap="outerHTML">Slet</button>
+        </td>
+      </tr>
+    {% else %}
+      <tr><td colspan="4" class="muted">Ingen betalinger endnu.</td></tr>
+    {% endfor %}
+    </tbody>
+  </table>
+
+  {% if st.status != "paid" %}
+  <form class="inline-form" hx-post="/payments/expense/{{ expense.id }}"
+        hx-target="#payment-panel" hx-swap="outerHTML"
+        hx-on::after-request="this.reset()">
+    <input type="text" name="amount_dkk" inputmode="decimal" placeholder="Beløb" required>
+    <input type="text" name="note" placeholder="Note (valgfri)">
+    <button type="submit">Tilføj betaling</button>
+  </form>
+  <button class="btn" hx-post="/payments/expense/{{ expense.id }}/mark-paid"
+          hx-target="#payment-panel" hx-swap="outerHTML">Markér fuldt betalt</button>
+  {% endif %}
+</div>

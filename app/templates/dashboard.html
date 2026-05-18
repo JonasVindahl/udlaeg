@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block title %}Dashboard – Udlæg{% endblock %}
+{% block content %}
+<h1>Dashboard</h1>
+
+<section>
+  <div class="section-head">
+    <h2>Saldo pr. person</h2>
+    <span class="total">Udestående i alt: <strong>{{ total_outstanding | kr }}</strong></span>
+  </div>
+  {% if balances %}
+  <div class="cards">
+    {% for b in balances %}
+    <div class="card {% if b.balance > 0 %}owed{% else %}clear{% endif %}">
+      <div class="card-name">{{ b.person.name }}</div>
+      <div class="card-amount">{{ b.balance | kr }}</div>
+      <div class="card-sub">{{ b.open_count }} åbne udlæg</div>
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <p class="muted">Ingen personer endnu. <a href="/persons">Tilføj en person</a>.</p>
+  {% endif %}
+</section>
+
+<section>
+  <h2>Seneste udlæg</h2>
+  {% if latest %}
+  <table class="data">
+    <thead><tr><th>Dato</th><th>Person</th><th>Beskrivelse</th><th class="num">Beløb</th><th>Status</th></tr></thead>
+    <tbody>
+    {% for exp, st in latest %}
+      <tr>
+        <td><a href="/expenses/{{ exp.id }}">{{ exp.date | dkdate }}</a></td>
+        <td>{{ exp.person.name }}</td>
+        <td>{{ exp.description or exp.category or "–" }}</td>
+        <td class="num">{{ exp.amount_dkk | kr }}</td>
+        <td><span class="badge {{ st.status }}">{{ st.status }}</span></td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <p class="muted">Ingen udlæg endnu.</p>
+  {% endif %}
+</section>
+{% endblock %}

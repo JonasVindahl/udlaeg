@@ -1,0 +1,13 @@
+services:
+  udlaeg:
+    build: .
+    container_name: udlaeg
+    restart: unless-stopped
+    ports:
+      - "8042:8000"
+    env_file: .env
+    volumes:
+      - /opt/udlaeg/db:/app/db
+      - /mnt/udlaeg/receipts:/app/data/receipts
+      - /mnt/udlaeg/backups:/app/data/backups
+    user: "568:568"

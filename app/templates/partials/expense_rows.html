@@ -1,0 +1,31 @@
+<tbody id="expense-rows">
+{% for exp, st in rows %}
+  <tr>
+    <td><a href="/expenses/{{ exp.id }}">{{ exp.date | dkdate }}</a></td>
+    <td>{{ exp.person.name }}</td>
+    <td>{{ exp.description or "–" }}</td>
+    <td>{{ exp.category or "–" }}</td>
+    <td class="num">{{ exp.amount_dkk | kr }}</td>
+    <td class="num">{{ st.total_paid | kr }}</td>
+    <td><span class="badge {{ st.status }}">{{ st.status }}</span></td>
+  </tr>
+{% else %}
+  <tr><td colspan="7" class="muted">Ingen udlæg matcher filteret.</td></tr>
+{% endfor %}
+{% if page > 1 or has_next %}
+  <tr class="pager">
+    <td colspan="7">
+      {% set base = "/expenses?person_id=" ~ (filters.person_id or '') ~ "&expense_status=" ~ (filters.expense_status or '') ~ "&date_from=" ~ (filters.date_from or '') ~ "&date_to=" ~ (filters.date_to or '') %}
+      {% if page > 1 %}
+        <button class="link" hx-get="{{ base }}&page={{ page - 1 }}"
+                hx-target="#expense-rows" hx-swap="outerHTML">← Forrige</button>
+      {% endif %}
+      <span class="muted">Side {{ page }} ({{ total }} i alt)</span>
+      {% if has_next %}
+        <button class="link" hx-get="{{ base }}&page={{ page + 1 }}"
+                hx-target="#expense-rows" hx-swap="outerHTML">Næste →</button>
+      {% endif %}
+    </td>
+  </tr>
+{% endif %}
+</tbody>

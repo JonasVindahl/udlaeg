@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block title %}Udlæg #{{ expense.id }} – Udlæg{% endblock %}
+{% block content %}
+<div class="section-head">
+  <h1>Udlæg #{{ expense.id }}</h1>
+  <div class="row-actions">
+    <a class="btn" href="/expenses/{{ expense.id }}/edit">Rediger</a>
+    <form method="post" action="/expenses/{{ expense.id }}/delete"
+          onsubmit="return confirm('Slet dette udlæg?')">
+      <button class="btn danger" type="submit">Slet</button>
+    </form>
+  </div>
+</div>
+
+<dl class="meta">
+  <dt>Person</dt><dd>{{ expense.person.name }}</dd>
+  <dt>Dato</dt><dd>{{ expense.date | dkdate }}</dd>
+  <dt>Beløb</dt><dd>{{ expense.amount_dkk | kr }}</dd>
+  <dt>Kategori</dt><dd>{{ expense.category or "–" }}</dd>
+  <dt>Beskrivelse</dt><dd>{{ expense.description or "–" }}</dd>
+</dl>
+
+<section>
+  <h2>Kvitteringer</h2>
+  <div id="receipt-section">
+    {% include "partials/receipt_grid.html" %}
+  </div>
+  <form class="inline-form" hx-post="/receipts/expense/{{ expense.id }}"
+        hx-target="#receipt-section" hx-swap="innerHTML"
+        hx-encoding="multipart/form-data"
+        hx-on::after-request="this.reset()">
+    <input type="file" name="file" accept=".jpg,.jpeg,.png,.pdf,.heic" required>
+    <button type="submit">Upload</button>
+    <progress id="up-progress" value="0" max="100" style="display:none"></progress>
+  </form>
+</section>
+
+<section>
+  <h2>Betalinger</h2>
+  {% include "partials/payment_panel.html" %}
+</section>
+
+<script>
+  document.body.addEventListener("htmx:xhr:progress", function (e) {
+    var p = document.getElementById("up-progress");
+    if (!p) return;
+    p.style.display = "inline-block";
+    p.value = e.detail.loaded / e.detail.total * 100;
+  });
+</script>
+{% endblock %}

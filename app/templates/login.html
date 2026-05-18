@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block title %}Log ind – Udlæg{% endblock %}
+{% block content %}
+<div class="login-card">
+  <h1>Udlæg</h1>
+  {% if error %}<p class="error">{{ error }}</p>{% endif %}
+  <form method="post" action="/login">
+    <label>Email
+      <input type="email" name="email" required autofocus autocomplete="username">
+    </label>
+    <label>Adgangskode
+      <input type="password" name="password" required autocomplete="current-password">
+    </label>
+    <button type="submit">Log ind</button>
+  </form>
+</div>
+{% endblock %}

@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title %}Personer – Udlæg{% endblock %}
+{% block content %}
+<h1>Personer</h1>
+
+<form class="inline-form" hx-post="/persons" hx-target="#person-rows" hx-swap="outerHTML"
+      hx-on::after-request="this.reset()">
+  <input type="text" name="name" placeholder="Navn på ny person" required>
+  <button type="submit">Tilføj</button>
+</form>
+
+<table class="data">
+  <thead><tr><th>Navn</th><th>Oprettet</th><th></th></tr></thead>
+  {% include "partials/person_rows.html" %}
+</table>
+{% endblock %}
