@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% block title %}{{ person.name }} – udestående{% endblock %}
+{% block content %}
+<p class="eyebrow">Udlæg · Oversigt</p>
+<h1>Hej {{ person.name }}</h1>
+
+<div class="publichero {% if outstanding > 0 %}owed{% else %}clear{% endif %}">
+  {% if outstanding > 0 %}
+    <span class="publichero-label">Du skylder i alt</span>
+    <span class="publichero-amount">{{ outstanding | kr }}</span>
+    <span class="publichero-sub">fordelt på {{ open_rows | length }} udlæg</span>
+  {% else %}
+    <span class="publichero-label">Status</span>
+    <span class="publichero-amount">Alt betalt 🎉</span>
+    <span class="publichero-sub">Ingen udestående udlæg lige nu</span>
+  {% endif %}
+</div>
+
+{% if open_rows %}
+<section>
+  <h2>Udestående</h2>
+  <table class="data">
+    <thead><tr><th>Dato</th><th>Beskrivelse</th><th class="num">Beløb</th>
+    <th class="num">Betalt</th><th class="num">Mangler</th><th>Status</th></tr></thead>
+    <tbody>
+    {% for exp, st in open_rows %}
+      <tr>
+        <td data-label="Dato">{{ exp.date | dkdate }}</td>
+        <td data-label="Beskrivelse">{{ exp.description or exp.category or "–" }}</td>
+        <td class="num" data-label="Beløb">{{ exp.amount_dkk | kr }}</td>
+        <td class="num" data-label="Betalt">{{ st.total_paid | kr }}</td>
+        <td class="num" data-label="Mangler">{{ st.remaining | kr }}</td>
+        <td data-label="Status"><span class="badge {{ st.status }}">{{ st.status }}</span></td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+</section>
+{% endif %}
+
+{% if paid_rows %}
+<section>
+  <details class="paid-fold">
+    <summary>Tidligere betalt ({{ paid_rows | length }})</summary>
+    <table class="data">
+      <thead><tr><th>Dato</th><th>Beskrivelse</th><th class="num">Beløb</th><th>Status</th></tr></thead>
+      <tbody>
+      {% for exp, st in paid_rows %}
+        <tr>
+          <td data-label="Dato">{{ exp.date | dkdate }}</td>
+          <td data-label="Beskrivelse">{{ exp.description or exp.category or "–" }}</td>
+          <td class="num" data-label="Beløb">{{ exp.amount_dkk | kr }}</td>
+          <td data-label="Status"><span class="badge {{ st.status }}">{{ st.status }}</span></td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </details>
+</section>
+{% endif %}
+
+<p class="public-foot">Skrivebeskyttet oversigt · spørgsmål? Tag fat i den der lagde ud.</p>
+{% endblock %}

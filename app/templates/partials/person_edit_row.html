@@ -1,5 +1,5 @@
 <tr id="person-{{ person.id }}">
-  <td colspan="3">
+  <td colspan="4">
     <form class="inline-form" hx-post="/persons/{{ person.id }}"
           hx-target="#person-rows" hx-swap="outerHTML">
       <input type="text" name="name" value="{{ person.name }}" required autofocus>

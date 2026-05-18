@@ -11,7 +11,19 @@
 </form>
 
 <table class="data">
-  <thead><tr><th>Navn</th><th>Oprettet</th><th></th></tr></thead>
+  <thead><tr><th>Navn</th><th>Oprettet</th><th>Delelink</th><th></th></tr></thead>
   {% include "partials/person_rows.html" %}
 </table>
+
+<script>
+  document.addEventListener("click", function (e) {
+    var btn = e.target.closest(".copy-btn");
+    if (!btn) return;
+    navigator.clipboard.writeText(btn.dataset.url).then(function () {
+      var old = btn.textContent;
+      btn.textContent = "Kopieret ✓";
+      setTimeout(function () { btn.textContent = old; }, 1600);
+    });
+  });
+</script>
 {% endblock %}

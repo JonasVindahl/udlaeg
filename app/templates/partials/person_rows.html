@@ -3,6 +3,28 @@
   <tr id="person-{{ person.id }}">
     <td data-label="Navn">{{ person.name }}</td>
     <td data-label="Oprettet">{{ person.created_at | dkdate }}</td>
+    <td data-label="Delelink" class="share-cell">
+      {% if person.share_token %}
+        {% set url = (request.base_url | string) ~ "p/" ~ person.share_token %}
+        <div class="share-box">
+          <input class="share-url" value="{{ url }}" readonly onfocus="this.select()">
+          <button type="button" class="link copy-btn" data-url="{{ url }}">Kopiér</button>
+        </div>
+        <div class="share-actions">
+          <a class="link" href="{{ url }}" target="_blank" rel="noopener">Åbn</a>
+          <button class="link" hx-post="/persons/{{ person.id }}/share/regenerate"
+                  hx-target="#person-rows" hx-swap="outerHTML"
+                  hx-confirm="Forny linket? Det gamle holder straks op med at virke.">Forny</button>
+          <button class="link danger" hx-post="/persons/{{ person.id }}/share/revoke"
+                  hx-target="#person-rows" hx-swap="outerHTML"
+                  hx-confirm="Spær {{ person.name }}s link helt?">Spær</button>
+        </div>
+      {% else %}
+        <span class="muted">Spærret</span>
+        <button class="link" hx-post="/persons/{{ person.id }}/share/enable"
+                hx-target="#person-rows" hx-swap="outerHTML">Aktivér link</button>
+      {% endif %}
+    </td>
     <td class="row-actions" data-label="Handling">
       <button class="link" hx-get="/persons/{{ person.id }}/edit"
               hx-target="#person-{{ person.id }}" hx-swap="outerHTML">Rediger</button>
@@ -12,6 +34,6 @@
     </td>
   </tr>
 {% else %}
-  <tr><td colspan="3" class="muted">Ingen personer endnu.</td></tr>
+  <tr><td colspan="4" class="muted">Ingen personer endnu.</td></tr>
 {% endfor %}
 </tbody>

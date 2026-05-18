@@ -9,7 +9,7 @@ from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.db import get_async_session
-from app.models.person import Person
+from app.models.person import Person, new_share_token
 from app.templating import templates
 from app.users import current_active_user
 
@@ -85,6 +85,57 @@ async def update_person(
     logger.info("person.update", extra={"person_id": person_id})
     persons = await _all_persons(session)
     return templates.TemplateResponse(request, "partials/person_rows.html", {"persons": persons})
+
+
+async def _set_share_token(
+    request: Request,
+    person_id: int,
+    token: str | None,
+    session: AsyncSession,
+    *,
+    log_event: str,
+) -> HTMLResponse:
+    person = await session.get(Person, person_id)
+    if person is None:
+        raise HTTPException(status.HTTP_404_NOT_FOUND)
+    person.share_token = token
+    await session.commit()
+    logger.info(log_event, extra={"person_id": person_id})
+    persons = await _all_persons(session)
+    return templates.TemplateResponse(request, "partials/person_rows.html", {"persons": persons})
+
+
+@router.post("/{person_id}/share/regenerate", response_class=HTMLResponse)
+async def regenerate_share(
+    request: Request,
+    person_id: int,
+    session: AsyncSession = Depends(get_async_session),
+) -> HTMLResponse:
+    return await _set_share_token(
+        request, person_id, new_share_token(), session, log_event="person.share.regenerate"
+    )
+
+
+@router.post("/{person_id}/share/enable", response_class=HTMLResponse)
+async def enable_share(
+    request: Request,
+    person_id: int,
+    session: AsyncSession = Depends(get_async_session),
+) -> HTMLResponse:
+    return await _set_share_token(
+        request, person_id, new_share_token(), session, log_event="person.share.enable"
+    )
+
+
+@router.post("/{person_id}/share/revoke", response_class=HTMLResponse)
+async def revoke_share(
+    request: Request,
+    person_id: int,
+    session: AsyncSession = Depends(get_async_session),
+) -> HTMLResponse:
+    return await _set_share_token(
+        request, person_id, None, session, log_event="person.share.revoke"
+    )
 
 
 @router.post("/{person_id}/delete", response_class=HTMLResponse)

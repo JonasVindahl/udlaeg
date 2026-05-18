@@ -14,7 +14,7 @@
 </head>
 <body>
   {% set _path = request.scope.get("path") %}
-  {% if _path != "/login" %}
+  {% if _path != "/login" and not _path.startswith("/p/") %}
   <nav class="topbar">
     <a class="brand" href="/">
       <span class="brand-mark">U</span>

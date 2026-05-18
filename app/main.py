@@ -13,7 +13,7 @@ from starlette.middleware.trustedhost import TrustedHostMiddleware
 from app.config import get_settings
 from app.db import engine
 from app.logging_config import configure_logging
-from app.routers import auth, dashboard, expenses, payments, persons, receipts
+from app.routers import auth, dashboard, expenses, payments, persons, public, receipts
 
 settings = get_settings()
 configure_logging(settings.log_level)
@@ -29,6 +29,7 @@ app.add_middleware(
 app.mount("/static", StaticFiles(directory="app/static"), name="static")
 
 app.include_router(auth.router)
+app.include_router(public.router)
 app.include_router(dashboard.router)
 app.include_router(persons.router)
 app.include_router(expenses.router)
